@@ -1,0 +1,44 @@
+import java.util.concurrent.Semaphore;
+import java.util.function.IntConsumer;
+
+class ZeroEvenOdd {
+    private int n;
+    private Semaphore zeroSem = new Semaphore(1); // Start with 1 permit to print '0' first
+    private Semaphore oddSem = new Semaphore(0);  // 0 permits initially
+    private Semaphore evenSem = new Semaphore(0); // 0 permits initially
+    
+    public ZeroEvenOdd(int n) {
+        this.n = n;
+    }
+
+    // Thread A: Prints 0s
+    public void zero(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 1; i <= n; i++) {
+            zeroSem.acquire();
+            printNumber.accept(0);
+            if (i % 2 == 1) {
+                oddSem.release();  // Hand off to the odd thread
+            } else {
+                evenSem.release(); // Hand off to the even thread
+            }
+        }
+    }
+
+    // Thread B: Prints even numbers (2, 4, 6...)
+    public void even(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 2; i <= n; i += 2) {
+            evenSem.acquire();
+            printNumber.accept(i);
+            zeroSem.release();     // Hand off back to the zero thread
+        }
+    }
+
+    // Thread C: Prints odd numbers (1, 3, 5...)
+    public void odd(IntConsumer printNumber) throws InterruptedException {
+        for (int i = 1; i <= n; i += 2) {
+            oddSem.acquire();
+            printNumber.accept(i);
+            zeroSem.release();     // Hand off back to the zero thread
+        }
+    }
+}
