@@ -1,0 +1,25 @@
+class Solution {
+    public int divide(int dividend, int divisor) {
+        // Special overflow edge case
+        if (dividend == Integer.MIN_VALUE && divisor == -1) return Integer.MAX_VALUE;
+
+        // Convert both to negative to prevent overflow issues
+        int a = dividend > 0 ? -dividend : dividend;
+        int b = divisor > 0 ? -divisor : divisor;
+        int quotient = 0;
+
+        // Exponential subtraction using addition loops
+        while (a <= b) {
+            int temp = b, multiple = 1;
+            while (a - temp <= temp) {
+                temp += temp;
+                multiple += multiple;
+            }
+            a -= temp;
+            quotient += multiple;
+        }
+
+        // Return the final result with the correct sign
+        return (dividend < 0) ^ (divisor < 0) ? -quotient : quotient;
+    }
+}
