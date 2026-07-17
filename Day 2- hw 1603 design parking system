@@ -1,0 +1,19 @@
+class ParkingSystem {
+    // Array to store the available slots for each car type
+    // Index 1 = big, Index 2 = medium, Index 3 = small
+    private int[] count;
+
+    public ParkingSystem(int big, int medium, int small) {
+        count = new int[]{0, big, medium, small};
+    }
+    
+    public boolean addCar(int carType) {
+        // If there are slots available for this car type
+        if (count[carType] > 0) {
+            count[carType]--; // Decrement the available slot
+            return true;      // Car parked successfully
+        }
+        // No slots left for this car type
+        return false;
+    }
+}
