@@ -1,0 +1,25 @@
+class Solution {
+    public boolean isAnagram(String s, String t) {
+        // Anagrams must have the exact same length
+        if (s.length() != t.length()) {
+            return false;
+        }
+
+        // Count frequencies for lowercase English letters (26 letters)
+        int[] count = new int[26];
+
+        for (int i = 0; i < s.length(); i++) {
+            count[s.charAt(i) - 'a']++; // Increment for character in s
+            count[t.charAt(i) - 'a']--; // Decrement for character in t
+        }
+
+        // If any count is non-zero, the strings aren't anagrams
+        for (int c : count) {
+            if (c != 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
