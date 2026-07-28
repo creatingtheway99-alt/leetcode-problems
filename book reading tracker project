@@ -1,0 +1,185 @@
+import java.util.*;
+
+class Book {
+    int id;
+    String title;
+    String author;
+    int pages;
+    boolean completed;
+
+    Book(int id, String title, String author, int pages) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.completed = false;
+    }
+}
+
+public class BookReadingTracker {
+
+    static ArrayList<Book> books = new ArrayList<>();
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+
+        int choice;
+
+        do {
+            System.out.println("\n========== BOOK READING TRACKER ==========");
+            System.out.println("1. Add Book");
+            System.out.println("2. View Books");
+            System.out.println("3. Mark Book as Completed");
+            System.out.println("4. Search Book");
+            System.out.println("5. Reading Progress");
+            System.out.println("6. Exit");
+            System.out.print("Enter your choice: ");
+
+            choice = sc.nextInt();
+            sc.nextLine();
+
+            switch (choice) {
+                case 1:
+                    addBook();
+                    break;
+
+                case 2:
+                    viewBooks();
+                    break;
+
+                case 3:
+                    markCompleted();
+                    break;
+
+                case 4:
+                    searchBook();
+                    break;
+
+                case 5:
+                    progress();
+                    break;
+
+                case 6:
+                    System.out.println("Thank you for using Book Reading Tracker!");
+                    break;
+
+                default:
+                    System.out.println("Invalid Choice!");
+            }
+
+        } while (choice != 6);
+    }
+
+    static void addBook() {
+
+        System.out.print("Book ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Book Title: ");
+        String title = sc.nextLine();
+
+        System.out.print("Author Name: ");
+        String author = sc.nextLine();
+
+        System.out.print("Total Pages: ");
+        int pages = sc.nextInt();
+
+        books.add(new Book(id, title, author, pages));
+
+        System.out.println("Book Added Successfully!");
+    }
+
+    static void viewBooks() {
+
+        if (books.isEmpty()) {
+            System.out.println("No books available.");
+            return;
+        }
+
+        System.out.println("\n--------------------------------------------------------------");
+        System.out.printf("%-5s %-20s %-15s %-8s %-10s\n",
+                "ID", "TITLE", "AUTHOR", "PAGES", "STATUS");
+        System.out.println("--------------------------------------------------------------");
+
+        for (Book b : books) {
+
+            String status = b.completed ? "Completed" : "Reading";
+
+            System.out.printf("%-5d %-20s %-15s %-8d %-10s\n",
+                    b.id, b.title, b.author, b.pages, status);
+        }
+    }
+
+    static void markCompleted() {
+
+        System.out.print("Enter Book ID: ");
+        int id = sc.nextInt();
+
+        boolean found = false;
+
+        for (Book b : books) {
+
+            if (b.id == id) {
+                b.completed = true;
+                found = true;
+                System.out.println("Book marked as completed.");
+                break;
+            }
+        }
+
+        if (!found)
+            System.out.println("Book not found.");
+    }
+
+    static void searchBook() {
+
+        System.out.print("Enter Book Title: ");
+        String name = sc.nextLine();
+
+        boolean found = false;
+
+        for (Book b : books) {
+
+            if (b.title.equalsIgnoreCase(name)) {
+
+                System.out.println("\nBook Found");
+                System.out.println("--------------------------");
+                System.out.println("ID      : " + b.id);
+                System.out.println("Title   : " + b.title);
+                System.out.println("Author  : " + b.author);
+                System.out.println("Pages   : " + b.pages);
+                System.out.println("Status  : "
+                        + (b.completed ? "Completed" : "Reading"));
+
+                found = true;
+            }
+        }
+
+        if (!found)
+            System.out.println("Book not found.");
+    }
+
+    static void progress() {
+
+        int completed = 0;
+
+        for (Book b : books) {
+            if (b.completed)
+                completed++;
+        }
+
+        int total = books.size();
+
+        System.out.println("\n========== READING PROGRESS ==========");
+
+        System.out.println("Total Books      : " + total);
+        System.out.println("Completed Books  : " + completed);
+        System.out.println("Remaining Books  : " + (total - completed));
+
+        if (total > 0) {
+            double percent = (completed * 100.0) / total;
+            System.out.printf("Progress         : %.2f%%\n", percent);
+        }
+    }
+}
